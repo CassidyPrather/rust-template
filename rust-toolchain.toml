@@ -1,0 +1,5 @@
+# Pin the toolchain channel so everyone (and CI) formats and lints
+# with the same rustfmt/clippy behavior.
+[toolchain]
+channel = "stable"
+components = ["rustfmt", "clippy"]

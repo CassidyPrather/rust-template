@@ -1,22 +1,26 @@
-# Python Template
+# Rust Template
 
-Cassidy's opinionated Python template. Enter at your own peril.
+Cassidy's opinionated Rust template. Enter at your own peril.
 
 ## Development
 
-Requires [uv](https://docs.astral.sh/uv/)
+Requires [Rust](https://rustup.rs/) (the pinned toolchain in
+`rust-toolchain.toml` is installed automatically by rustup)
 
-Setup: `uv sync --dev`
+Build: `cargo build`
 
-Lint: `uv run ruff check`
+Run: `cargo run -- --help`
 
-Format: `uv run ruff format`
+Lint: `cargo clippy --all-targets --all-features -- -D warnings`
 
-Type-check: `uv run ty check`
+Format: `cargo fmt`
 
-Test: `uv run pytest`
+Test: `cargo test`
 
-Security audit: `uv audit --preview-features audit`
+Security audit: `cargo audit` (requires `cargo install cargo-audit`)
+
+Type checking is the compiler's job — there is no separate step. Fast
+feedback without a full build: `cargo check`.
 
 ## Template Setup
 
@@ -24,34 +28,56 @@ Security audit: `uv audit --preview-features audit`
 
 2. **Clone your new repository** and navigate to it
 
-3. **Update project metadata** in `pyproject.toml`:
+3. **Update project metadata** in `Cargo.toml`:
    - Change `name` to your project name (use kebab-case, e.g., `my-awesome-tool`)
-   - Update the `[project.scripts]` entry point name to match (e.g., `my-awesome-tool = "my_awesome_tool.cli:main"`)
-   - Update `authors` with your information
-   - Modify `requires-python` if needed
+   - Update the `[lib]` name to match (snake_case, e.g., `my_awesome_tool`)
+   - Update the `[[bin]]` name to match (kebab-case)
+   - Update `authors` and `description` with your information
    - Update dependencies as required
 
-4. **Rename the package directory**:
-   - Rename `src/python_template/` to `src/your_package_name/` (use snake_case, e.g., `my_awesome_tool`)
-   - Update imports in `pyproject.toml` (the `[project.scripts]` entry and `version-file` path)
-   - Update imports in test files (`from python_template` → `from your_package_name`)
-   - Update imports in `src/your_package_name/__init__.py`
+4. **Update the crate references in source**:
+   - `src/main.rs`: change `rust_template::cli::run()` to `your_crate_name::cli::run()`
+   - Everything else uses `crate::` paths or `env!("CARGO_PKG_NAME")` and
+     picks up the rename automatically
 
-5. **Update `.vscode/launch.json`** (if using VS Code):
-   - Change `"module": "python_template"` to `"module": "your_package_name"` in all configurations
+5. **Update `.github/workflows/ci-cd.yml`**:
+   - Change `BIN="rust-template"` in the Package binary step to your binary name
 
-6. **Update the README**:
+6. **Update `.vscode/launch.json`** (if using VS Code):
+   - Replace `rust-template` / `rust_template` in the `cargo` sections
+
+7. **Update the README**:
    - Replace the title and description
    - Remove or customize this Template Setup section
 
-7. **Initialize your environment**:
-   ```bash
-   uv sync --dev
-   ```
-
 8. **Verify everything works**:
    ```bash
-   uv run pytest
-   uv run ruff check
-   uv run ty check
+   cargo test
+   cargo clippy --all-targets --all-features -- -D warnings
+   cargo fmt --check
    ```
+
+## Layout
+
+- `src/main.rs` — thin binary entry point
+- `src/lib.rs` — library root, so tests and downstream code can reuse everything
+- `src/cli.rs` — argument parsing (clap), logging setup, dispatch
+- `src/commands/` — one module per subcommand; copy `example.rs` to add one
+- `tests/cli.rs` — end-to-end tests that run the compiled binary
+
+## Conventions baked in
+
+- **Clippy at maximum grump**: `pedantic`, `nursery`, and `cargo` lint
+  groups are enabled in `Cargo.toml`, and CI runs with `-D warnings`.
+  Targeted `allow`s go in `[lints.clippy]` with a justifying comment.
+- **`unsafe` is forbidden** crate-wide. Delete the `unsafe_code = "forbid"`
+  line if you genuinely need it (you probably don't).
+- **`Cargo.lock` is committed** — this builds a binary, and binaries want
+  reproducible dependency trees.
+- **Logging**: `-v`/`-vv`/`-vvv` map to INFO/DEBUG/TRACE (default WARN);
+  `RUST_LOG` overrides for full [env_logger](https://docs.rs/env_logger)
+  filter syntax.
+- **Errors**: subcommands return `anyhow::Result<()>`; the CLI layer logs
+  the error chain and converts it to a non-zero exit code.
+- **Releases**: publishing a GitHub release builds and attaches binaries
+  for Linux (x86_64), macOS (arm64), and Windows (x86_64).

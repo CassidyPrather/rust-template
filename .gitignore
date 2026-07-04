@@ -1,13 +1,5 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
+# Rust build artifacts
+/target/
 
-# Virtual environments
-.venv
-
-# Auto-generated version file
-src/*/_version.py
+# Note: Cargo.lock IS committed. This template builds a binary, and
+# binaries want reproducible dependency trees.
