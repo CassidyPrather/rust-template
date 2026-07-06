@@ -12,9 +12,13 @@ use log::{LevelFilter, error};
 
 use crate::commands::{example, version};
 
+/// Full version string embedded by `build.rs`: the `git describe` output
+/// when built from a git checkout, or Cargo.toml's version otherwise.
+pub const VERSION: &str = env!("GIT_DESCRIBE_VERSION");
+
 /// Top-level argument parser with global arguments.
 #[derive(Debug, Parser)]
-#[command(name = env!("CARGO_PKG_NAME"), version, about, long_about = None)]
+#[command(name = env!("CARGO_PKG_NAME"), version = VERSION, about, long_about = None)]
 pub struct Cli {
     /// Increase verbosity (can be repeated: -v, -vv, -vvv)
     #[arg(short, long, action = ArgAction::Count, global = true)]

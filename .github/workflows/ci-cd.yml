@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history and tags for version detection
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -33,6 +35,11 @@ jobs:
 
       - name: Run tests
         run: cargo test --all-features
+
+      - name: Check generated docs are current
+        run: |
+          cargo run --bin gen-docs
+          git diff --exit-code README.md SKILL.md
 
       - name: Install cargo-audit
         uses: taiki-e/install-action@cargo-audit
@@ -59,6 +66,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history and tags for version detection
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable

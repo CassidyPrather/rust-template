@@ -37,12 +37,13 @@ fn cli_version_flag() {
 
 #[test]
 fn cli_version_subcommand() {
+    // The version may be tag-based ("1.2.3-4-gabc1234") or the Cargo.toml
+    // fallback ("0.1.0+gabc1234"), so only assert the semver core
     cli()
         .arg("version")
         .assert()
         .success()
-        .stdout(is_match(SEMVER).expect("valid regex"))
-        .stdout(predicate::str::contains(env!("CARGO_PKG_VERSION")));
+        .stdout(is_match(SEMVER).expect("valid regex"));
 }
 
 #[test]
