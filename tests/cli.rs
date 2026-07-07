@@ -1,13 +1,9 @@
 //! Integration tests for CLI functionality.
-//!
-//! These run the compiled binary end-to-end via [`assert_cmd`], the Rust
-//! analogue of shelling out to `python -m package` in the Python template.
 
 use assert_cmd::Command;
 use predicates::prelude::*;
 use predicates::str::is_match;
 
-/// Semantic version pattern (X.Y.Z, possibly with pre-release/build info).
 const SEMVER: &str = r"\d+\.\d+\.\d+";
 
 fn cli() -> Command {
@@ -37,8 +33,6 @@ fn cli_version_flag() {
 
 #[test]
 fn cli_version_subcommand() {
-    // The version may be tag-based ("1.2.3-4-gabc1234") or the Cargo.toml
-    // fallback ("0.1.0+gabc1234"), so only assert the semver core
     cli()
         .arg("version")
         .assert()

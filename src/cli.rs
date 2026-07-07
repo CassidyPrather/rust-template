@@ -1,8 +1,4 @@
 //! Command-line interface.
-//!
-//! This module provides the main CLI entry point, argument parsing, and
-//! logging setup. Subcommands are defined in separate files under the
-//! `commands/` directory.
 
 use std::io::Write as _;
 use std::process::ExitCode;
@@ -12,11 +8,8 @@ use log::{LevelFilter, error};
 
 use crate::commands::{example, version};
 
-/// Full version string embedded by `build.rs`: the `git describe` output
-/// when built from a git checkout, or Cargo.toml's version otherwise.
 pub const VERSION: &str = env!("GIT_DESCRIBE_VERSION");
 
-/// Top-level argument parser with global arguments.
 #[derive(Debug, Parser)]
 #[command(name = env!("CARGO_PKG_NAME"), version = VERSION, about, long_about = None)]
 pub struct Cli {
@@ -33,9 +26,7 @@ pub struct Cli {
 /// [`run`].
 #[derive(Debug, Subcommand)]
 pub enum Command {
-    /// Display package version
     Version,
-    /// Example subcommand (replace with your own)
     Example(example::Args),
 }
 

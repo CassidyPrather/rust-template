@@ -1,9 +1,4 @@
-//! Criterion benchmark scaffold.
-//!
-//! These two benches exist to prove the wiring works; replace them with
-//! your actual hot paths. Run with `cargo bench`; results and an HTML
-//! report land in `target/criterion/`. Compare against a saved baseline
-//! with `cargo bench -- --save-baseline main` / `--baseline main`.
+//! Criterion benchmark
 
 use std::hint::black_box;
 

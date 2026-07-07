@@ -1,5 +1,1 @@
-# Rust build artifacts
 /target/
-
-# Note: Cargo.lock IS committed. This template builds a binary, and
-# binaries want reproducible dependency trees.

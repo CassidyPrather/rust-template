@@ -10,14 +10,9 @@ license = "AGPL-3.0-or-later"
 repository = "https://github.com/CassidyPrather/rust-template"
 keywords = ["cli", "template"]
 categories = ["command-line-utilities"]
-# Guard against accidental `cargo publish`. Remove this (and see the
-# "Tracked considerations" section of the README) to publish to crates.io.
 publish = false
-# `cargo run` should run the CLI, not the gen-docs helper
 default-run = "rust-template"
 
-# The library target exists so integration tests and downstream code can
-# reuse the CLI internals. The binary is a thin wrapper around it.
 [lib]
 name = "rust_template"
 path = "src/lib.rs"
@@ -26,8 +21,6 @@ path = "src/lib.rs"
 name = "rust-template"
 path = "src/main.rs"
 
-# Doc generator: keeps README.md's Usage section and SKILL.md in sync with
-# the CLI's --help output. Run with `cargo run --bin gen-docs`.
 [[bin]]
 name = "gen-docs"
 path = "src/bin/gen_docs.rs"

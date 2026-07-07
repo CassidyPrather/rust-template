@@ -1,6 +1,5 @@
 //! Example subcommand template.
 //!
-//! This file demonstrates the pattern for creating new subcommands.
 //! To add a new subcommand:
 //!
 //! 1. Copy this file to a new name (e.g., `fetch_data.rs`)

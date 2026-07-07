@@ -1,15 +1,8 @@
-//! Documentation generator.
-//!
-//! Regenerates the Usage section of `README.md` (between the
-//! `generated-usage` markers) and all of `SKILL.md` from the clap
-//! definition, so the committed docs never drift from the actual `--help`
-//! output. Run with:
-//!
+//! Regenerates docs using special comment markers.
+//! 
 //! ```text
 //! cargo run --bin gen-docs
 //! ```
-//!
-//! CI runs it and fails if the committed files differ from the output.
 
 use std::fmt::Write as _;
 use std::fs;
@@ -40,7 +33,6 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-/// Render the top-level help text as a fenced code block.
 fn render_usage(cmd: &mut clap::Command) -> Result<String> {
     let mut usage = String::new();
     writeln!(usage, "```text")?;
@@ -49,7 +41,6 @@ fn render_usage(cmd: &mut clap::Command) -> Result<String> {
     Ok(usage)
 }
 
-/// Render `SKILL.md`: top-level help plus a section per subcommand.
 fn render_skill(cmd: &mut clap::Command) -> Result<String> {
     let name = cmd.get_name().to_string();
     let description = cmd.get_about().map(ToString::to_string).unwrap_or_default();
@@ -89,7 +80,6 @@ fn render_skill(cmd: &mut clap::Command) -> Result<String> {
     Ok(skill)
 }
 
-/// Splice the rendered usage block between the README's markers.
 fn update_readme(path: &Path, usage: &str) -> Result<()> {
     let content =
         fs::read_to_string(path).with_context(|| format!("failed to read {}", path.display()))?;

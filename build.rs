@@ -1,11 +1,4 @@
 //! Embed a `git describe`-based version at compile time.
-//!
-//! This is the Rust analogue of hatch-vcs: a binary built exactly on a tag
-//! reports the tag (`1.2.3`), while a development build several commits
-//! past the tag reports how it has mutated (`1.2.3-4-gabc1234`, plus
-//! `-dirty` for uncommitted changes). Builds without git history (source
-//! tarballs, `cargo install` from a registry) fall back to Cargo.toml's
-//! version.
 
 use std::env;
 use std::process::Command;
@@ -25,8 +18,6 @@ fn main() {
                 // Tag-based: "1.2.3" or "1.2.3-4-gabc1234[-dirty]"
                 describe.to_string()
             } else {
-                // No tags yet: bare commit hash. Mimic hatch-vcs's
-                // local-version style: "0.1.0+gabc1234[-dirty]"
                 format!("{pkg_version}+g{describe}")
             }
         },
@@ -34,8 +25,6 @@ fn main() {
     println!("cargo::rustc-env=GIT_DESCRIBE_VERSION={version}");
 }
 
-/// Run `git describe` and return its output, or `None` when git or the
-/// repository is unavailable.
 fn git_describe() -> Option<String> {
     let output = Command::new("git")
         .args(["describe", "--tags", "--always", "--dirty"])
