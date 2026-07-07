@@ -48,15 +48,10 @@ Regenerate docs: `cargo run --bin gen-docs`
 
 ### Hooks
 
-Formatting and doc regeneration run automatically, so there's nothing to
-remember:
-
-- **Humans**: enable once per clone with `git config core.hooksPath .githooks`.
-  The pre-commit hook runs `cargo fmt` and `gen-docs`, and fails the commit
-  if they changed anything — review and re-stage.
-- **Claude Code**: the PostToolUse hook in `.claude/settings.json` runs both
-  after every Rust source edit.
-- **CI** stays the backstop for anyone with neither.
+Enable once per clone: `git config core.hooksPath .githooks`. The
+pre-commit hook runs `cargo fmt` and `gen-docs`, and fails the commit if
+they changed anything — review and re-stage. CI is the backstop for
+clones without it.
 
 ###  Advanced
 
@@ -136,3 +131,6 @@ Deliberately not enabled; opt in per project:
   tracking needs Bencher/CodSpeed and a quiet runner.
 - **Named frames in release backtraces** — `strip = "symbols"` favors
   size; switch to `"debuginfo"` for debuggable crash reports.
+- **Agent-/editor-specific auto-fix hooks** — deliberately absent to
+  avoid vendor lock-in. The neutral path is pointing whatever tooling
+  you use at `.githooks/pre-commit`; CI catches whatever slips through.
