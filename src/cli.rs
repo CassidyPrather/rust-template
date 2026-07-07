@@ -23,10 +23,12 @@ pub struct Cli {
 }
 
 /// Available subcommands. Register new ones here and dispatch them in
-/// [`run`].
+/// [`run`]. The variant doc comments become the `--help` descriptions.
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Display package version
     Version,
+    /// Example subcommand (replace with your own)
     Example(example::Args),
 }
 

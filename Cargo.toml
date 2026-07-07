@@ -51,8 +51,13 @@ nursery = { level = "warn", priority = -1 }
 cargo = { level = "warn", priority = -1 }
 # Targeted allows (each one earns its place, like the ruff ignores did)
 multiple_crate_versions = "allow" # Transitive deps disagree; not actionable here
+missing_errors_doc = "allow" # Undocumented stuff is fine (the D10 of clippy)
+missing_panics_doc = "allow" # Ditto
 
 [profile.release]
-# Smaller, faster binaries at the cost of compile time
+# Not cargo defaults (they favor compile time and debuggability).
+# "symbols" = smallest binary, but release backtraces become bare
+# addresses; switch to "debuginfo" if you want named frames in crash
+# reports.
 lto = "thin"
 strip = "symbols"

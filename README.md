@@ -105,3 +105,22 @@ Keep Cargo.toml's `version` in sync with tags when you release;
    cargo fmt --check
    cargo run --bin gen-docs
    ```
+
+## Tracked considerations
+
+Deliberately not enabled; opt in per project:
+
+- **Fail CI on `cargo audit`** — delete the `|| true` in `ci-cd.yml`.
+- **cargo-deny** — audit plus license allowlists and duplicate-dep bans.
+- **Publish to crates.io** — remove `publish = false`, add a
+  `CARGO_REGISTRY_TOKEN` secret and a publish step (or `cargo-release` /
+  `release-plz` for the whole tag-bump-publish flow).
+- **cargo-dist** — generated installers (shell/PowerShell/Homebrew/MSI)
+  replacing the hand-rolled release matrix; adopt when installer
+  distribution matters.
+- **MSRV enforcement** — `rust-version` is declared but unverified; add a
+  `cargo-msrv verify` job if downstream consumers care.
+- **Bench regression gates** — criterion baselines are local-only; CI
+  tracking needs Bencher/CodSpeed and a quiet runner.
+- **Named frames in release backtraces** — `strip = "symbols"` favors
+  size; switch to `"debuginfo"` for debuggable crash reports.
