@@ -46,6 +46,18 @@ Test: `cargo test`
 
 Regenerate docs: `cargo run --bin gen-docs`
 
+### Hooks
+
+Formatting and doc regeneration run automatically, so there's nothing to
+remember:
+
+- **Humans**: enable once per clone with `git config core.hooksPath .githooks`.
+  The pre-commit hook runs `cargo fmt` and `gen-docs`, and fails the commit
+  if they changed anything — review and re-stage.
+- **Claude Code**: the PostToolUse hook in `.claude/settings.json` runs both
+  after every Rust source edit.
+- **CI** stays the backstop for anyone with neither.
+
 ###  Advanced
 
 Benchmark: `cargo bench` (HTML report at `target/criterion/report/index.html`;
