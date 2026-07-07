@@ -38,7 +38,7 @@ jobs:
 
       - name: Check generated docs are current
         run: |
-          cargo run --bin gen-docs
+          cargo run --all-features --bin gen-docs
           git diff --exit-code README.md SKILL.md
 
       - name: Install cargo-audit
