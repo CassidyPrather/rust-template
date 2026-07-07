@@ -46,13 +46,6 @@ Test: `cargo test`
 
 Regenerate docs: `cargo run --bin gen-docs`
 
-### Hooks
-
-Enable once per clone: `git config core.hooksPath .githooks`. The
-pre-commit hook runs `cargo fmt` and `gen-docs`, and fails the commit if
-they changed anything — review and re-stage. CI is the backstop for
-clones without it.
-
 ###  Advanced
 
 Benchmark: `cargo bench` (HTML report at `target/criterion/report/index.html`;
@@ -60,21 +53,12 @@ fast sanity pass: `cargo bench --bench cli_bench -- --quick`)
 
 Security audit: `cargo audit` (requires `cargo install cargo-audit`)
 
-## Versioning
+Release:
 
-`build.rs` embeds `git describe` output at compile time, so the binary
-reports how it relates to the last release (the hatch-vcs experience):
-
-| Build state             | `--version` reports                            |
-| ----------------------- | ---------------------------------------------- |
-| Exactly on tag `v1.2.3` | `1.2.3`                                        |
-| 4 commits past `v1.2.3` | `1.2.3-4-gabc1234`                             |
-| Uncommitted changes     | previous, plus `-dirty`                        |
-| No tags yet             | `0.1.0+gabc1234` (Cargo.toml version + commit) |
-| No git at all (tarball) | `0.1.0` (Cargo.toml version)                   |
-
-Keep Cargo.toml's `version` in sync with tags when you release;
-`cargo-release` automates the bump-tag-push dance if you want it.
+1. `cargo publish patch` (or `minor` or `major`)
+2. `git push main`
+3. git push your tag
+4. Wait for CI to finish the job
 
 ## Template Setup
 
@@ -112,25 +96,3 @@ Keep Cargo.toml's `version` in sync with tags when you release;
    cargo fmt --check
    cargo run --bin gen-docs
    ```
-
-## Tracked considerations
-
-Deliberately not enabled; opt in per project:
-
-- **Fail CI on `cargo audit`** — delete the `|| true` in `ci-cd.yml`.
-- **cargo-deny** — audit plus license allowlists and duplicate-dep bans.
-- **Publish to crates.io** — remove `publish = false`, add a
-  `CARGO_REGISTRY_TOKEN` secret and a publish step (or `cargo-release` /
-  `release-plz` for the whole tag-bump-publish flow).
-- **cargo-dist** — generated installers (shell/PowerShell/Homebrew/MSI)
-  replacing the hand-rolled release matrix; adopt when installer
-  distribution matters.
-- **MSRV enforcement** — `rust-version` is declared but unverified; add a
-  `cargo-msrv verify` job if downstream consumers care.
-- **Bench regression gates** — criterion baselines are local-only; CI
-  tracking needs Bencher/CodSpeed and a quiet runner.
-- **Named frames in release backtraces** — `strip = "symbols"` favors
-  size; switch to `"debuginfo"` for debuggable crash reports.
-- **Agent-/editor-specific auto-fix hooks** — deliberately absent to
-  avoid vendor lock-in. The neutral path is pointing whatever tooling
-  you use at `.githooks/pre-commit`; CI catches whatever slips through.

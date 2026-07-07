@@ -55,9 +55,6 @@ missing_errors_doc = "allow" # Undocumented stuff is fine (the D10 of clippy)
 missing_panics_doc = "allow" # Ditto
 
 [profile.release]
-# Not cargo defaults (they favor compile time and debuggability).
-# "symbols" = smallest binary, but release backtraces become bare
-# addresses; switch to "debuginfo" if you want named frames in crash
-# reports.
+# Smaller, faster binaries at the cost of compile time
 lto = "thin"
 strip = "symbols"
