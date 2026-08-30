@@ -52,9 +52,9 @@ jobs:
         uses: taiki-e/install-action@cargo-audit
 
       - name: Security audit
-        run: |
-          # Just warnings for now...
-          cargo audit || true
+        # Fails on vulnerabilities; unmaintained/unsound/yanked stay advisory.
+        # Tune deferrals in .cargo/audit.toml, not by muting the step.
+        run: cargo audit
 
   build-and-publish:
     needs: lint-and-test
